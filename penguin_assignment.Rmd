@@ -1,0 +1,51 @@
+---
+title: "penguin_assignment"
+author: '1055489'
+date: "08/12/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### A linear regression model between body mass and flipper length, irrespective of species
+
+```{r main}
+
+#getting access to other r scripts in repository
+
+source("functions/libraries.r") #loading the libraries
+source("functions/cleaning.r") #cleaning functions
+source("functions/plotting.r") #plotting and saving figure functions
+
+#save a master raw copy of data locally
+
+write.csv(penguins_raw, "data_raw/penguins_raw.csv")
+
+#cleaning data
+
+penguins_clean <- cleaning(penguins_raw)
+write.csv(penguins_clean, "data_clean/penguins_clean.csv")
+
+penguins_regression <- penguins_clean %>%
+  clean_flipper_body()
+
+head(penguins_regression) #check to make sure the function has worked
+  
+#linear regression
+
+lmbodymass <- lm(flipper_length_mm ~ body_mass_g, data = penguins_regression)
+summary(lmbodymass)
+
+#plotting graph with linear model overlaid
+
+plot_regression(penguins_regression)
+
+#saving figures as png and vector
+
+save_plot_png(penguins_regression,"figures/fig01_report.png",size = 15, res = 600, scaling=1)
+save_plot_svg(penguins_regression, "figures/fig01_vector.svg", size = 15, scaling = 1)
+
+
+```
